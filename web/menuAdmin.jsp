@@ -13,9 +13,19 @@
         <title>Men&uacute; Principal</title>
     </head>
     <body>
-        <div class="username"><p>${username}</p></div>
+        
+        <div class="username">
+            <p>
+                ${username}
+            </p>
+        </div>
         <nav>
-        <ul>
+        <c:if test="${addSongResult!=null}">
+                    <tr>
+                        <td colspan="4" class="msg"><c:out value="${addSongResult}" /></td>
+                    </tr>
+                </c:if>
+            <ul>
             <li><a href="addSongs.jsp">Agregar canciones</a></li>
             <li><a href="listSongs.jsp">Listar canciones</a></li>
             <li><a href="Salir.do">Salir</a></li>

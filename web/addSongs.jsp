@@ -50,11 +50,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                <c:forEach begin="1" end="${canciones}" step="1">
+                <c:forEach begin="1" end="${canciones}" var="i" step="1">
                     <tr>
-                        <td><input type="text" name="cancion" placeholder="song name here" size="30" maxlength="50" required></td>
-                        <td><input type="text" name="genero" placeholder="music style here" size="30" maxlength="50" required></td>
-                        <td><input type="text" name="duracion" placeholder="hh:mm:ss" pattern="^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$" size="8" required></td>
+                        <td><input type="text" name="cancion${i}" placeholder="song name here" size="30" maxlength="50" required></td>
+                        <td><input type="text" name="genero${i}" placeholder="music style here" size="30" maxlength="50" required></td>
+                        <td><input type="text" name="duracion${i}" placeholder="hh:mm:ss" pattern="^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$" size="8" required></td>
                     </tr>
                 </c:forEach>
                     <tr>
