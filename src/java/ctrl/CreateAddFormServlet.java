@@ -5,6 +5,7 @@
  */
 package ctrl;
 
+import dto.Album;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,7 +16,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author hmoraga
  */
-public class CreateAddFormServlet extends HttpServlet {
+public class CreateAddFormServlet extends HttpServlet
+{
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -27,9 +29,38 @@ public class CreateAddFormServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException
+    {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
+
+        //Getting parameters
+        String album = request.getParameter("album");
+        String artista = request.getParameter("artista");
+        int canciones = 0;
+        try
+        {
+            canciones = request.getParameter("canciones");
+        } catch (Exception e)
+        {
+            response.setParameter("errorMsg", "Must enter an int");
+            response.getRequestDispatcher().forward("addSong.jsp", request, response);
+        }
+        if (canciones <= 0)
+        {
+            response.setParameter("errorMsg", "Songs quantity must be bigger than 0");
+            response.getRequestDispatcher().forward("addSong.jsp", request, response);
+        } else
+        {
+            //Create object, put it into the session and send the form with the updated number
+            //of rows.
+            Album toAdd = new Album();
+            toAdd.setArtista(artista);
+            toAdd.setNombre(artista);
+            request.getSession().setAttribute("toAdd", toAdd);
+            request.getSession().setAttribute("canciones", canciones);
+            response.getRequestDispatcher().forward("addSong.jsp", request, response);
+        }
 
     }
 
@@ -44,7 +75,8 @@ public class CreateAddFormServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException
+    {
         processRequest(request, response);
     }
 
@@ -58,7 +90,8 @@ public class CreateAddFormServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException
+    {
         processRequest(request, response);
     }
 
@@ -68,7 +101,8 @@ public class CreateAddFormServlet extends HttpServlet {
      * @return a String containing servlet description
      */
     @Override
-    public String getServletInfo() {
+    public String getServletInfo()
+    {
         return "Short description";
     }// </editor-fold>
 

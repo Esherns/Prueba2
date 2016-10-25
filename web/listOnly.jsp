@@ -5,6 +5,7 @@
 --%>
 
 <%@page import="dao.CancionDAOImpl"%>
+<%@page import="dto.CancionExtendida"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -60,7 +61,11 @@
                 <tbody>
                     <c:forEach items="${listaCanciones}" var="cancionExtendida">
                     <tr>
-                        <!-- aqui mostrar los campos indicados en las cabeceras -->
+                        <td>${cancionExtendida.getCancion().getNombre()}</td>
+                        <td>${cancionExtendida.getCancion().getGenero()}</td>
+                        <td>${cancionExtendida.getDuracion()}</td>
+                        <td>${cancionExtendida.getAlbum().getNombre()}</td>
+                        <td>${cancionExtendida.getAlbum().getArtista()}</td>
                     </tr>
                     </c:forEach>
                     <tr>
