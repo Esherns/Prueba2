@@ -32,6 +32,7 @@ public class CancionDAOImpl implements CancionDAO{
      * @return The mapped User from the current row of the given ResultSet.
      * @throws SQLException If something fails at database level.
      */
+    
     private static Cancion map(ResultSet resultSet) throws SQLException {
         Cancion song = new Cancion();
         
@@ -43,4 +44,6 @@ public class CancionDAOImpl implements CancionDAO{
         
         return song;
     }
+    
+    
 }
