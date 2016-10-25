@@ -32,8 +32,12 @@ public class DBAccess {
         }
     }
      
-    public static DBAccess getInstance(){
-        // completar aquí ...
+    public static DBAccess getInstance()
+    {
+            if (instance == null) {
+            instance = new DBAccess();
+        }
+        return instance;
     }
     
     public Connection getConnection(){

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import dao.LoginDAO;
 import dao.LoginDAOImpl;
+import java.io.PrintWriter;
 
 /**
  *
@@ -35,6 +36,8 @@ public class LoginServlet extends HttpServlet {
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
+        HttpSession session = request.getSession();
+        PrintWriter out = response.getWriter();
         
         String user = request.getParameter("user");
         String pass = request.getParameter("pass");
@@ -46,17 +49,31 @@ public class LoginServlet extends HttpServlet {
         LoginDAO logindao = new LoginDAOImpl();
         
         //validate login
-        if (logindao.validate(login)){
-            // crear sesion
+        if (logindao.validate(login))
+        {
+            
+            session.setAttribute("Login", login);
             
             // agregar a la sesion los atributos perfil y nombre de usuario
             
-            // depende del perfil es la pagina inicial
+            if (logindao.getProfile(login.getUsername()).equals("admin") ) 
+            {
+                //out.println(login.getUsername());
+                request.getRequestDispatcher("/menuAdmin.jsp").include(request, response);
+            }
+            else if(logindao.getProfile(login.getUsername()).equals("commonUser"))
+            {
+                //out.println(login.getUsername());
+                request.getRequestDispatcher("/listSongs.jsp").include(request, response);
+            } 
             
-                }
-                request.getRequestDispatcher(url).include(request, response);
-            } else throw new AuthenticationException("Usuario no posee profile!");
-        } else {
+            else  throw new AuthenticationException("Usuario no posee profile!");        
+            
+        }
+                
+        
+         
+        else {
             request.setAttribute("errorMsg", "Usuario Invalido");
             request.getRequestDispatcher("./").forward(request, response);
         }
