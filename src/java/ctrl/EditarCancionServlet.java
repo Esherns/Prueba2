@@ -5,11 +5,14 @@
  */
 package ctrl;
 
+import dto.CancionExtendida;
 import java.io.IOException;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -30,6 +33,18 @@ public class EditarCancionServlet extends HttpServlet {
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
+        
+        HttpSession session = request.getSession();
+        List<CancionExtendida> listaCanciones = (List<CancionExtendida>)session.getAttribute("listaCanciones");
+        
+        for (CancionExtendida c : listaCanciones) 
+        {
+            if (c.getCancion().getId() == Integer.parseInt(request.getParameter("idCancion"))) 
+            {
+                request.setAttribute("cancionExtendida", c);
+                request.getRequestDispatcher("/editSong.jsp").include(request, response);
+            }
+        }
 
     }
 

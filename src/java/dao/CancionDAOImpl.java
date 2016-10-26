@@ -233,6 +233,7 @@ public class CancionDAOImpl implements CancionDAO
                 op.setString(1, song.getNombre());
                 op.setString(2, song.getGenero());
                 op.setInt(3, song.getDuracion());
+                op.setInt(4, song.getId());
 
                 return (op.executeUpdate() == 1);
 

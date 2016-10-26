@@ -13,6 +13,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import dao.CancionDAOImpl;
+import dto.CancionExtendida;
+import dto.Cancion;
+import dto.Album;
+import java.util.List;
+import javax.servlet.http.HttpSession;
+import ctrl.Helpers;
+import java.io.PrintWriter;
 
 /**
  *
@@ -30,14 +38,64 @@ public class UpdateSongServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {        
-        try {
-            request.setCharacterEncoding("UTF-8");
-            response.setCharacterEncoding("UTF-8");
+            throws ServletException, IOException, SQLException {        
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
+        
+        PrintWriter out = response.getWriter();
+        HttpSession session = request.getSession();
+        List<CancionExtendida> listaCanciones = (List<CancionExtendida>)session.getAttribute("listaCanciones");
+        CancionDAOImpl ca = new CancionDAOImpl();
+        String Validar = Validar(request);
+        if (Validar.equals("true")) 
+        {
+            for (CancionExtendida c : listaCanciones) {
+                if (c.getCancion().getId() == Integer.parseInt(request.getParameter("idCancion"))) {
 
-        } catch (SQLException ex) {
-            Logger.getLogger(UpdateSongServlet.class.getName()).log(Level.SEVERE, null, ex);
+                    c.getCancion().setDuracion(request.getParameter("duracion"));
+                    c.getCancion().setGenero(request.getParameter("genero"));
+                    c.getCancion().setNombre(request.getParameter("nombre"));
+                    Cancion cancion = c.getCancion();
+                    ca.update(cancion);
+                    session.setAttribute("listaCanciones", listaCanciones);
+                    request.setAttribute("cancionExtendida", c);
+                    request.getRequestDispatcher("/listSongs.jsp").forward(request, response);
+                }
+
+            }
         }
+        else
+        {
+            out.println(Validar);
+            request.getRequestDispatcher("/EditarCancion.do").include(request, response); 
+        }
+        
+        
+    }
+    
+    public String Validar(HttpServletRequest request)
+    {
+        
+        if (request.getParameter("nombre").trim().equals("") || request.getParameter("nombre") == null) 
+        {
+            return "El campo nombre no puede estar vacio";
+        }
+        else if (request.getParameter("genero").trim().equals("") || request.getParameter("genero") == null) 
+        {
+            return "El campo genero no puede estar vacio";
+        }
+        try 
+        { 
+            Helpers.getHourFormatToSeconds(request.getParameter("duracion"));
+        } 
+        catch(NumberFormatException e )
+        { 
+           return "El campo duracion debe estar en el formato hh:mm:ss";
+        }
+        
+        return "true";
+  
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -52,7 +110,11 @@ public class UpdateSongServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(UpdateSongServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -66,7 +128,11 @@ public class UpdateSongServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(UpdateSongServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

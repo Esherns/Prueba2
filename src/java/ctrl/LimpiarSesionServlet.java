@@ -11,9 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import dao.AlbumDAOImpl;
-import dto.Album;
-import java.util.List;
+
 
 /**
  *
@@ -33,10 +31,7 @@ public class LimpiarSesionServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // carga la sesion y me limpia todos los atributos guardados
-        AlbumDAOImpl p = new AlbumDAOImpl();
-        Album a = new Album();
-        p.deleteAlbumByName("Chicken Destroy", "Mucholucho");
-        
+
         request.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession();
         session.removeAttribute("searchBy");

@@ -16,28 +16,28 @@
         <!-- completar todos los ??? -->
         <div class="username"><p>${username}</p></div>
         <form action="UpdateSong.do" method="POST">
-            <input type="hidden" name="idAlbum" value="???">
-            <input type="hidden" name="idCancion" value="???">
+            <input type="hidden" name="idAlbum" value="${cancionExtendida.album.id}">
+            <input type="hidden" name="idCancion" value="${cancionExtendida.cancion.id}">
             <table>
                 <tr>
                     <td>Nombre:</td>
-                    <td><input type="text" name="nombre" value="???"></td>
+                    <td><input type="text" name="nombre" value="${cancionExtendida.cancion.nombre}"></td>
                 </tr>
                 <tr>
                     <td>G&eacute;nero:</td>
-                    <td><input type="text" name="genero" value="???"></td>
+                    <td><input type="text" name="genero" value="${cancionExtendida.cancion.genero}"></td>
                 </tr>
                 <tr>
                     <td>Duracion:</td>
-                    <td><input type="text" name="duracion" value="${cancionExtendida.duracion}"></td>
+                    <td><input type="text" name="duracion" value="${cancionExtendida.cancion.duracion}"></td>
                 </tr>
                 <tr>
                     <td>Album:</td>
-                    <td><input type="text" name="nombreAlbum" value="???" readonly></td>
+                    <td><input type="text" name="nombreAlbum" value="${cancionExtendida.album.nombre}" readonly></td>
                 </tr>
                 <tr>
                     <td>Artista:</td>
-                    <td><input type="text" name="artista" value="???" readonly></td>
+                    <td><input type="text" name="artista" value="${cancionExtendida.album.artista}" readonly></td>
                 </tr>
                 <tr>
                     <td></td>

@@ -10,6 +10,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.SQLException;
+import java.util.List;
+import dto.CancionExtendida;
+import dao.CancionDAOImpl;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -27,9 +34,24 @@ public class BorrarCancion extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, SQLException {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
+        
+        HttpSession session = request.getSession();
+        List<CancionExtendida> listaCanciones = (List<CancionExtendida>)session.getAttribute("listaCanciones");
+        CancionDAOImpl cancion = new CancionDAOImpl();
+        int id = Integer.parseInt(request.getParameter("id"));
+        for (CancionExtendida c : listaCanciones) 
+        {
+            if (id == c.getCancion().getId()) 
+            {
+                cancion.removeBySongId(id);
+                listaCanciones.remove(c);
+                session.setAttribute("listaCanciones", listaCanciones);
+                request.getRequestDispatcher("/listSongs.jsp").forward(request, response);
+            }
+        }
 
     }
 
@@ -45,7 +67,11 @@ public class BorrarCancion extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(BorrarCancion.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -59,7 +85,11 @@ public class BorrarCancion extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(BorrarCancion.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

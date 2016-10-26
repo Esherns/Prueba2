@@ -58,12 +58,14 @@ public class LoginServlet extends HttpServlet {
             
             if (logindao.getProfile(login.getUsername()).equals("admin") ) 
             {
-                //out.println(login.getUsername());
+                session.setAttribute("user", login);
+                session.setAttribute("username", login.getUsername());
                 request.getRequestDispatcher("/menuAdmin.jsp").include(request, response);
             }
             else if(logindao.getProfile(login.getUsername()).equals("commonUser"))
             {
-                //out.println(login.getUsername());
+                session.setAttribute("user", login);
+                session.setAttribute("username", login.getUsername());
                 request.getRequestDispatcher("/listOnly.jsp").include(request, response);
             } 
             
