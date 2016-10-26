@@ -194,10 +194,12 @@ public class AlbumDAOImpl implements AlbumDAO{
                 PreparedStatement op = acceso.getConnection().prepareStatement(DELETE_ALBUM_BY_NAME_AND_ARTIST);
                 
                 try {
+                    
                     op.setString(1, albumName);
                     op.setString(2, artist);
-
-                    return op.executeUpdate();
+                    
+                    op.executeUpdate();
+                    return 1;
                     
                     
                 } catch (SQLException ex) {

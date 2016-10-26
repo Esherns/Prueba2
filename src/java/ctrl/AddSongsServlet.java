@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -43,11 +44,12 @@ public class AddSongsServlet extends HttpServlet
 
         Album album = (Album) request.getSession().getAttribute("toAdd");
         int albumID = 0;
+        AlbumDAOImpl p = new AlbumDAOImpl();
 
         //Trying to add album
         try
         {
-            if (AlbumDAOImpl.create(album) < 0)
+            if (p.create(album) < 0)
             {
                 String errorMsg = "Error cuando se creó el album (solo el album). Ya existe\n";
                 errorMsg += request.getSession.getParameter("errorMsg");
@@ -55,7 +57,7 @@ public class AddSongsServlet extends HttpServlet
             } else
             {
                 //Obtain ID
-                albumID = AlbumDAOImpl.findID(album.getNombre(), album.getArtista());
+                albumID = p.findId(album.getNombre(), album.getArtista());
             }
         } catch (Exception e)
         {

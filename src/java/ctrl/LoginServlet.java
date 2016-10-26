@@ -64,7 +64,7 @@ public class LoginServlet extends HttpServlet {
             else if(logindao.getProfile(login.getUsername()).equals("commonUser"))
             {
                 //out.println(login.getUsername());
-                request.getRequestDispatcher("/listSongs.jsp").include(request, response);
+                request.getRequestDispatcher("/listOnly.jsp").include(request, response);
             } 
             
             else  throw new AuthenticationException("Usuario no posee profile!");        
