@@ -12,12 +12,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.metadata.ClassMetadata;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
  *
@@ -54,157 +55,240 @@ public class CancionDAOImpl implements CancionDAO
         return song;
     }
 
-    public List<Cancion> getAll() throws Exception
-    {
-        Session session = NewHibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
-        try
-        {
-
-            return (List<Cancion>) session.createCriteria(Cancion.class).list();
-
-        } catch (Exception e)
-        {
-
-            session.getTransaction().rollback();
-            session.close();
-            System.err.println(e.getMessage());
-            throw e;
-        } finally
-        {
-            session.close();
-
-        }
-    }
-
     @Override
-    public int create(Cancion c) throws SQLException
+    public int create(Cancion song) throws SQLException
     {
-
-        Session session = NewHibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
         try
         {
+            DBAccess acceso = DBAccess.getInstance();
 
-            session.save(c);
-            session.getTransaction().commit();
-            session.close();
-            return 0;
-        } catch (Exception e)
+            PreparedStatement op = acceso.getConnection().prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
+
+            try
+            {
+
+                op.setString(1, song.getNombre());
+                op.setString(2, song.getGenero());
+                op.setString(3, String.valueOf(song.getDuracion()));
+                op.setString(4, String.valueOf(song.getIdAlbum()));
+
+                return op.executeUpdate();
+
+            } catch (SQLException ex)
+            {
+
+                Logger.getLogger(AlbumDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+                System.err.println("Error on Cancion's DAO - Create: " + ex.getMessage());
+                return -1;
+            }
+        } catch (SQLException ex)
         {
-
-            session.getTransaction().rollback();
-            session.close();
-            System.err.println(e.getMessage());
-            throw e;
+            Logger.getLogger(AlbumDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Error on Cancion's DAO - Create: " + ex.getMessage());
+            return -1;
         }
     }
 
     @Override
     public List<Integer> addAll(List<Cancion> songs) throws SQLException
     {
-        List<Integer> result = null;
-
-        Session session = NewHibernateUtil.getSessionFactory().openSession();
+        List<Integer> result = new ArrayList<>();
         for (Cancion song : songs)
         {
-            String nombre = song.getNombre();
-            String genero = song.getGenero();
-            int duracion = song.getDuracion();
-            int idAlbum = song.getIdAlbum();
-
-            Query query = session.createSQLQuery(INSERT);
-            query.setString(1, nombre);
-            query.setString(2, genero);
-            query.setString(3, String.valueOf(duracion));
-            query.setString(4, String.valueOf(idAlbum));
-
-            if (result != null)
+            try
             {
-                result.addAll(query.list());
-            } else
+                DBAccess acceso = DBAccess.getInstance();
+
+                PreparedStatement op = acceso.getConnection().prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
+
+                try
+                {
+
+                    op.setString(1, song.getNombre());
+                    op.setString(2, song.getGenero());
+                    op.setString(3, String.valueOf(song.getDuracion()));
+                    op.setString(4, String.valueOf(song.getIdAlbum()));
+
+                    result.add(op.executeUpdate());
+                    return result;
+
+                } catch (SQLException ex)
+                {
+
+                    Logger.getLogger(AlbumDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+                    System.err.println("Error on Cancion's DAO - Create: " + ex.getMessage());
+                    result.add(-1);
+                    return result;
+                }
+            } catch (SQLException ex)
             {
-                result = query.list();
+                Logger.getLogger(AlbumDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+                System.err.println("Error on Cancion's DAO - Create: " + ex.getMessage());
+                result.add(-1);
+                return result;
             }
         }
-
         return result;
     }
 
     @Override
     public List<Cancion> findByAlbumId(int albumId) throws SQLException
     {
-        List<Cancion> result = null;
+        try
+        {
+            DBAccess acceso = DBAccess.getInstance();
 
-        Session session = NewHibernateUtil.getSessionFactory().openSession();
+            PreparedStatement op = acceso.getConnection().prepareStatement(FIND_SONGS_BY_ALBUM_ID);
+            List<dto.Cancion> result = new ArrayList<>();
 
-        Query query = session.createSQLQuery(FIND_SONGS_BY_ALBUM_ID);
-        query.setString(1, String.valueOf(albumId));
+            try
+            {
+                op.setString(1, String.valueOf(albumId));
 
-        result = (List<Cancion>) query.list();
+                ResultSet rs = op.executeQuery();
+                while (rs.next())
+                {
+                    dto.Cancion s = new dto.Cancion();
+                    s.setNombre(rs.getString("nombre"));
+                    s.setGenero(rs.getString("genero"));
+                    s.setDuracion(rs.getString("duracion"));
+                    s.setIdAlbum(Integer.parseInt(rs.getString("idAlbum")));
+                    s.setId(Integer.parseInt(rs.getString("id")));
+                    result.add(s);
+                }
 
-        return result;
+                return result;
+
+            } catch (SQLException ex)
+            {
+
+                Logger.getLogger(AlbumDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+                return result;
+
+            }
+        } catch (SQLException ex)
+        {
+            List<dto.Cancion> result = new ArrayList<>();
+            Logger.getLogger(AlbumDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            return result;
+
+        }
     }
 
     @Override
     public List<String> getCabeceras() throws SQLException
     {
-        List<String> result = null;
-
-        Session session = NewHibernateUtil.getSessionFactory().openSession();
-        Query query = session.createSQLQuery("SELECT * FROM CANCION");
-
-        ClassMetadata classMetadata = NewHibernateUtil.getSessionFactory().getClassMetadata(Album.class);
-        List<String> propertyNames = Arrays.asList(classMetadata.getPropertyNames());
-
-        return result;
+        List<String> lista = new ArrayList<>();
+        lista.add(INSERT);
+        lista.add(FIND_SONGS_BY_ALBUM_ID);
+        lista.add(REMOVE_BY_SONG_ID);
+        lista.add(UPDATE);
+        lista.add(FIND_BY_ID);
+        return lista;
     }
 
     @Override
     public boolean removeBySongId(int songId) throws SQLException
     {
-        List<Cancion> result = null;
+        try
+        {
+            DBAccess acceso = DBAccess.getInstance();
 
-        Session session = NewHibernateUtil.getSessionFactory().openSession();
+            PreparedStatement op = acceso.getConnection().prepareStatement(REMOVE_BY_SONG_ID);
 
-        Query query = session.createSQLQuery(REMOVE_BY_SONG_ID);
-        query.setString(1, String.valueOf(songId));
+            try
+            {
+                op.setString(1, String.valueOf(songId));
 
-        result = (List<Cancion>) query.list();
+                return op.executeUpdate() != 0;
 
-        return result != null;
+            } catch (SQLException ex)
+            {
+
+                Logger.getLogger(CancionDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+                return false;
+
+            }
+        } catch (SQLException ex)
+        {
+
+            Logger.getLogger(CancionDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+
+        }
     }
 
     @Override
     public boolean update(Cancion song) throws SQLException
     {
-        List<Cancion> result = null;
+        try
+        {
+            DBAccess acceso = DBAccess.getInstance();
 
-        Session session = NewHibernateUtil.getSessionFactory().openSession();
+            PreparedStatement op = acceso.getConnection().prepareStatement(UPDATE);
 
-        Query query = session.createSQLQuery(UPDATE);
-        query.setString(1, song.getNombre());
-        query.setString(2, song.getGenero());
-        query.setString(3, String.valueOf(song.getDuracion()));
+            try
+            {
+                //"UPDATE cancion SET nombre=?,genero=?,duracion=? WHERE id=?";
+                op.setString(1, song.getNombre());
+                op.setString(2, song.getGenero());
+                op.setInt(3, song.getDuracion());
 
-        result = (List<Cancion>) query.list();
+                return (op.executeUpdate() == 1);
 
-        return result != null;
+            } catch (SQLException ex)
+            {
+
+                Logger.getLogger(AlbumDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+                return false;
+
+            }
+        } catch (SQLException ex)
+        {
+
+            Logger.getLogger(AlbumDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+
+        }
     }
 
     @Override
     public Cancion findById(int idCancion) throws SQLException
     {
-        Cancion result = null;
+        try {
+                DBAccess acceso = DBAccess.getInstance();
 
-        Session session = NewHibernateUtil.getSessionFactory().openSession();
+                PreparedStatement op = acceso.getConnection().prepareStatement(FIND_BY_ID);
+                try {
+                    //"SELECT * FROM cancion WHERE id =?"
+                    op.setInt(1, idCancion);
 
-        Query query = session.createSQLQuery(UPDATE);
-        query.setString(1,String.valueOf(idCancion));
-
-        result = (Cancion) query.list().get(0);
-
-        return result;
+                    ResultSet rs = op.executeQuery();
+                    if (rs.next()) 
+                    {
+                       Cancion a = new Cancion();
+                       a.setNombre(rs.getString("nombre"));
+                       a.setGenero(rs.getString("genero"));
+                       a.setDuracion(rs.getString("duracion"));
+                       a.setIdAlbum(rs.getInt("idAlbum"));
+                       return a;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                    
+                } catch (SQLException ex) {
+                    
+                    Logger.getLogger(CancionDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+                    return null;
+                    
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(CancionDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+                return null;
+                
+            }
     }
 
 }
