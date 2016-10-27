@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author hmoraga
+ * @author diegoMarquez_silvioBelledone
  */
 public class CancionDAOImpl implements CancionDAO
 {
@@ -56,6 +56,13 @@ public class CancionDAOImpl implements CancionDAO
     }
 
     @Override
+    /**
+     * Inserts a Cancion into the database
+     *
+     * @param song The song that is to be inserted
+     * @return an int that represents the insert result (e.g. -1 if error)
+     * @throws SQLException If something fails at database level.
+     */
     public int create(Cancion song) throws SQLException
     {
         try
@@ -90,6 +97,14 @@ public class CancionDAOImpl implements CancionDAO
     }
 
     @Override
+    /**
+     * Inserts a list of Cancion into the database
+     *
+     * @param songs The group of songs that will be inserted
+     * @return A dynamic array of Integers. Each one represents the insert status of its
+     * corresponding Cancion
+     * @throws SQLException If something fails at database level.
+     */
     public List<Integer> addAll(List<Cancion> songs) throws SQLException
     {
         List<Integer> result = new ArrayList<>();
@@ -132,6 +147,13 @@ public class CancionDAOImpl implements CancionDAO
     }
 
     @Override
+    /**
+     * Retrieves all the Cancions that pertain to a specified Album
+     *
+     * @param albumId The album from  which the songs will be returned  
+     * @return A dynamic array of Cancions. Every Cancion belong to that album
+     * @throws SQLException If something fails at database level.
+     */
     public List<Cancion> findByAlbumId(int albumId) throws SQLException
     {
         try
@@ -176,6 +198,12 @@ public class CancionDAOImpl implements CancionDAO
     }
 
     @Override
+    /**
+     * Retrieves all the queries used in this DAO
+     *
+     * @return A list of the queries, in string format, that will be used
+     * @throws SQLException If something fails at database level.
+     */
     public List<String> getCabeceras() throws SQLException
     {
         List<String> lista = new ArrayList<>();
@@ -188,6 +216,13 @@ public class CancionDAOImpl implements CancionDAO
     }
 
     @Override
+    /**
+     * Removes a song from the database
+     *
+     * @param songId the song to be removed
+     * @return true or false, depending on the deletion result
+     * @throws SQLException If something fails at database level.
+     */
     public boolean removeBySongId(int songId) throws SQLException
     {
         try
@@ -219,6 +254,13 @@ public class CancionDAOImpl implements CancionDAO
     }
 
     @Override
+    /**
+     * Updates a song's data on the database
+     *
+     * @param song the song to be updated. Its fields will be the new ones
+     * @return true or false, depending on the update result
+     * @throws SQLException If something fails at database level.
+     */
     public boolean update(Cancion song) throws SQLException
     {
         try
@@ -254,6 +296,13 @@ public class CancionDAOImpl implements CancionDAO
     }
 
     @Override
+    /**
+     * Looks for a song with a specific Id and then returns it
+     *
+     * @param song the song to be searched.  
+     * @return The song, only if was found. Otherwise, a null value will be returned
+     * @throws SQLException If something fails at database level.
+     */
     public Cancion findById(int idCancion) throws SQLException
     {
         try {
