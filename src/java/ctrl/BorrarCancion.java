@@ -39,17 +39,25 @@ public class BorrarCancion extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         
         HttpSession session = request.getSession();
+        
+        //Retrive the song list
         List<CancionExtendida> listaCanciones = (List<CancionExtendida>)session.getAttribute("listaCanciones");
+        
+        //This DAO will be used for deletion
         CancionDAOImpl cancion = new CancionDAOImpl();
+        
+        //In the url, the song's id was parsed (GET)
         int id = Integer.parseInt(request.getParameter("id"));
         for (CancionExtendida c : listaCanciones) 
         {
+            //Looks for the song
             if (id == c.getCancion().getId()) 
             {
-                cancion.removeBySongId(id);
-                listaCanciones.remove(c);
-                session.setAttribute("listaCanciones", listaCanciones);
-                request.getRequestDispatcher("/listSongs.jsp").forward(request, response);
+                //Found
+                cancion.removeBySongId(id); //Remove
+                listaCanciones.remove(c); //Remove on the list used on view
+                session.setAttribute("listaCanciones", listaCanciones); // pack 'n' send
+                request.getRequestDispatcher("/listSongs.jsp").forward(request, response); 
             }
         }
 
