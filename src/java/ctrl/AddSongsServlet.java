@@ -44,29 +44,25 @@ public class AddSongsServlet extends HttpServlet
 
         Album album = (Album) request.getSession().getAttribute("toAdd");
         int albumID = 0;
+        int canciones = (int) request.getSession().getAttribute("canciones");
         AlbumDAOImpl p = new AlbumDAOImpl();
 
         //Trying to add album
         try
         {
-            if (p.create(album) < 0)
-            {
-                String errorMsg = "Error cuando se creó el album (solo el album). Ya existe\n";
-                errorMsg += request.getSession.getParameter("errorMsg");
-                request.getSession.setParameter("errorMsg", errorMsg);
-            } else
-            {
-                //Obtain ID
-                albumID = p.findId(album.getNombre(), album.getArtista());
-            }
+            p.create(album);
+            albumID = p.findId(album.getNombre(), album.getArtista());
+            album.setId(albumID);
         } catch (Exception e)
         {
             String errorMsg = "Error cuando se creó el album (solo el album). " + e.getMessage() + "\n";
-            errorMsg += request.getSession.getParameter("errorMsg");
-            request.getSession.setParameter("errorMsg", errorMsg);
+            errorMsg += request.getAttribute("errorMsg");
+            
+            request.setAttribute("errorMsg", errorMsg);
         }
-
-        for (int i = 1; i <= request.getSession.getAttribute("canciones"); i++)
+        int errors = 0;
+        CancionDAOImpl dao = new CancionDAOImpl();
+        for (int i = 1; i <= canciones; i++)
         {
             String name = request.getParameter("cancion" + i);
             String gender = request.getParameter("genero" + i);
@@ -80,29 +76,33 @@ public class AddSongsServlet extends HttpServlet
 
             try
             {
-                if (CancionDAOImpl.create(song) < 0)
+                if ( dao.create(song) < 0)
                 {
-                    String errorMsg = "Error cuando se creó la cancion " + song.getNombre()
-                            + "(solo la cancion). Ya existe\n";
-                    errorMsg += request.getSession.getParameter("errorMsg");
-                    request.getSession.setParameter("errorMsg", errorMsg);
-                    request.getRequestDispatcher().forward("addSongs.jsp", request, response);
+                    errors++;
                 }
             } catch (Exception e)
             {
-                String errorMsg = "Error cuando se creó la cancion (solo la cancion). " + e.getMessage() + "\n";
-                errorMsg += request.getSession.getParameter("errorMsg");
-                request.getSession.setParameter("errorMsg", errorMsg);
-                request.getRequestDispatcher().forward("addSongs.jsp", request, response);
+                errors++;
             }
         }
+        if (errors > 0)
+        {
+            String errorMsg = errors + " de " + canciones + " canciones agregadas erróneamente";
+            errorMsg += request.getAttribute("errorMsg");
+            request.setAttribute("errorMsg", errorMsg);
+            request.getRequestDispatcher("addSongs.jsp").forward(request, response);
+        } else
+        {
+            String addSongResult = "Canciones agregadas exitosamente";
+            request.getSession().setAttribute("addSongResult", addSongResult);
+            request.getRequestDispatcher("menuAdmin.jsp").forward(request, response);
+        }
 
-        request.getSession().setParameter("addSongResult", "Album agregado exitosamente");
-        request.getRequestDispatcher().forward("addSongs.jsp", request, response);
-
+        //request.setAttribute("addSongResult", "Album agregado exitosamente");
+        //request.getRequestDispatcher("addSongs.jsp").forward(request, response);
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -118,9 +118,11 @@ public class AddSongsServlet extends HttpServlet
         try
         {
             processRequest(request, response);
+
         } catch (SQLException ex)
         {
-            Logger.getLogger(AddSongsServlet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AddSongsServlet.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -139,9 +141,11 @@ public class AddSongsServlet extends HttpServlet
         try
         {
             processRequest(request, response);
+
         } catch (SQLException ex)
         {
-            Logger.getLogger(AddSongsServlet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AddSongsServlet.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
