@@ -58,7 +58,7 @@ public class CreateAddFormServlet extends HttpServlet
             //of rows.
             Album toAdd = new Album();
             toAdd.setArtista(artista);
-            toAdd.setNombre(artista);
+            toAdd.setNombre(album);
             request.getSession().setAttribute("toAdd", toAdd);
             request.getSession().setAttribute("canciones", canciones);
             request.getRequestDispatcher("addSongs.jsp").forward(request, response);
