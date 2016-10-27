@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author hmoraga
+ * @author diegoMarquez & silvioBelledone
  */
 public class CreateAddFormServlet extends HttpServlet
 {
