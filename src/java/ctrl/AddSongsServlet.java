@@ -42,6 +42,7 @@ public class AddSongsServlet extends HttpServlet
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 
+        //Get data from session. The album will be used for insertion
         Album album = (Album) request.getSession().getAttribute("toAdd");
         int albumID = 0;
         int canciones = (int) request.getSession().getAttribute("canciones");
@@ -50,6 +51,7 @@ public class AddSongsServlet extends HttpServlet
         //Trying to add album
         try
         {
+            //Creates an album. It doesn't matter if it exists
             p.create(album);
             albumID = p.findId(album.getNombre(), album.getArtista());
             album.setId(albumID);
@@ -61,19 +63,23 @@ public class AddSongsServlet extends HttpServlet
             request.setAttribute("errorMsg", errorMsg);
         }
         int errors = 0;
+        //This dao will be used for database functions
         CancionDAOImpl dao = new CancionDAOImpl();
         for (int i = 1; i <= canciones; i++)
         {
+            //obtaining that row data
             String name = request.getParameter("cancion" + i);
             String gender = request.getParameter("genero" + i);
             String duration = request.getParameter("duracion" + i);
 
+            //Send it into the song to be inserted
             Cancion song = new Cancion();
             song.setNombre(name);
             song.setDuracion(duration);
             song.setGenero(gender);
             song.setIdAlbum(albumID);
 
+            //Insert it into the database and log its result
             try
             {
                 if ( dao.create(song) < 0)
@@ -87,6 +93,7 @@ public class AddSongsServlet extends HttpServlet
         }
         if (errors > 0)
         {
+            //Warn about the occured errors
             String errorMsg = errors + " de " + canciones + " canciones agregadas erróneamente";
             errorMsg += request.getAttribute("errorMsg");
             request.setAttribute("errorMsg", errorMsg);
