@@ -37,19 +37,21 @@ public class CreateAddFormServlet extends HttpServlet
         //Getting parameters
         String album = request.getParameter("album");
         String artista = request.getParameter("artista");
+        request.getSession().setAttribute("album",album);
+        request.getSession().setAttribute("artista",artista);
         int canciones = 0;
         try
         {
-            canciones = request.getParameter("canciones");
+            canciones = Integer.parseInt(request.getParameter("canciones"));
         } catch (Exception e)
         {
-            response.setParameter("errorMsg", "Must enter an int");
-            response.getRequestDispatcher().forward("addSong.jsp", request, response);
+            request.setAttribute("errorMsg", "Must enter an int");
+            request.getRequestDispatcher("addSongs.jsp").forward(request, response);
         }
         if (canciones <= 0)
         {
-            response.setParameter("errorMsg", "Songs quantity must be bigger than 0");
-            response.getRequestDispatcher().forward("addSong.jsp", request, response);
+            request.setAttribute("errorMsg", "Songs quantity must be bigger than 0");
+            request.getRequestDispatcher("addSongs.jsp").forward(request, response);
         } else
         {
             //Create object, put it into the session and send the form with the updated number
@@ -59,7 +61,7 @@ public class CreateAddFormServlet extends HttpServlet
             toAdd.setNombre(artista);
             request.getSession().setAttribute("toAdd", toAdd);
             request.getSession().setAttribute("canciones", canciones);
-            response.getRequestDispatcher().forward("addSong.jsp", request, response);
+            request.getRequestDispatcher("addSongs.jsp").forward(request, response);
         }
 
     }
