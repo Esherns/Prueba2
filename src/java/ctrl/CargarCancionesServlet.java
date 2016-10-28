@@ -59,7 +59,11 @@ public class CargarCancionesServlet extends HttpServlet {
         Album album = new Album();
         Login login = (Login)session.getAttribute("user");
         
-        
+      /** 
+     * En esta zona se genera la lista de canciones extendidas de acuerdo
+     * al artista ingresado por el usuario, se consulta a la base de datos para 
+     * saber si este existe o no.
+     */
         if (request.getParameter("searchBy").equals("Artista")) 
         {
             listaAlbums = albumDB.findByArtist(request.getParameter("data"));
@@ -80,6 +84,10 @@ public class CargarCancionesServlet extends HttpServlet {
                     }
                 }
                 session.setAttribute("listaCanciones", listaCanciones);
+                /** 
+                * Se verifica el tipo de perfil de usuario para redirigir a 
+                * la pagina correspondiente.
+                */
                 if (logindao.getProfile(login.getUsername()).equals("admin")) 
                 {
                     request.getRequestDispatcher("/listSongs.jsp").forward(request, response);
@@ -91,6 +99,12 @@ public class CargarCancionesServlet extends HttpServlet {
                 
             }
         }
+        
+      /** 
+     * En esta zona se genera la lista de canciones extendidas de acuerdo
+     * al nombre de albim ingresado por el usuario, se consulta a la base de datos para 
+     * saber si este existe o no.
+     */
         else
         {
             album = albumDB.findByName(request.getParameter("data"));

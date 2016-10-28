@@ -48,6 +48,12 @@ public class UpdateSongServlet extends HttpServlet {
         List<CancionExtendida> listaCanciones = (List<CancionExtendida>)session.getAttribute("listaCanciones");
         CancionDAOImpl ca = new CancionDAOImpl();
         String Validar = Validar(request);
+        
+        /** 
+         * En caso de que la validacion sea exitosa se pasa a buscar
+         * la cancion correspondiente a modificar, al obtenerla se modifican
+         * los datos de esta y luego se modifican en la base de datos.
+        */
         if (Validar.equals("true")) 
         {
             for (CancionExtendida c : listaCanciones) {
@@ -73,6 +79,11 @@ public class UpdateSongServlet extends HttpServlet {
         
         
     }
+    
+     /** 
+      * Metodo para validar que los datos ingresados por el usuario son correctos.
+      * *@return el metodo retorna un string con el mensaje de error correspondiente.
+     */
     
     public String Validar(HttpServletRequest request)
     {

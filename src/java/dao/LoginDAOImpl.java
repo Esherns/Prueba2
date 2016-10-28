@@ -21,6 +21,13 @@ public class LoginDAOImpl implements LoginDAO{
     private static final String VALIDATE_LOGIN = "SELECT COUNT(*) FROM usuario WHERE username=? AND password=?";
     private static final String GET_PROFILE_BY_USERNAME = "SELECT B.profileName FROM usuario A,profile B WHERE A.profile_id=B.id AND A.username=?";
     
+    
+     /**
+     * Metodo para validar que el usuario existe.
+     * *@param login representa al usuario con su contraseña.
+     * @return retorna true en caso de ser encontrado y false en caso contrario. 
+     * 
+     */
     @Override
     public boolean validate(Login login){
         if (login == null) {
@@ -49,7 +56,12 @@ public class LoginDAOImpl implements LoginDAO{
             return false;
         }
     }
-            
+     /**
+     * Metodo para saber el perfil al cual pertenece el usuario.
+     * *@param username representa el nombre del usuario.
+     * @return retorna un string con el tipo de perfil del usuario. 
+     * 
+     */        
     @Override
     public String getProfile(String username) {
         try {

@@ -47,6 +47,12 @@ public class AlbumDAOImpl implements AlbumDAO{
         return album;
     }
     @Override
+    /**
+     * Crea el album entregado en la base de datos.
+     * *@param album es el album a crear dentro de la base de datos.
+     * @return este retorna un int, si es 1 siginifica que se realizo con exito 
+     * y -1 en caso contrario.
+     */
     public int create(Album album)
     {
             try {
@@ -70,6 +76,13 @@ public class AlbumDAOImpl implements AlbumDAO{
                 return -1;
             }
     }
+    
+    /**
+     * Metodo para buscar un album por nombre.
+     * *@param albumName representa el nombre del album a buscar.
+     * @return retorna el album buscado, en caso de no econtrarlo lo retorna nulo 
+     * 
+     */
     
     @Override
     public Album findByName(String albumName)
@@ -108,6 +121,12 @@ public class AlbumDAOImpl implements AlbumDAO{
             }
     }
     
+     /**
+     * Metodo para buscar todos los albums relacionados a un artista
+     * *@param artist representa el nombre del artista a buscar.
+     * @return retorna una lista de  albums con el nombre del artista ingresado. 
+     * 
+     */
     @Override
     public List<Album> findByArtist(String artist)
     {
@@ -146,7 +165,13 @@ public class AlbumDAOImpl implements AlbumDAO{
                 
             }
     }
-    
+     /**
+     * Metodo para buscar el id del album de acuerdo a un nombre y artista ingresado 
+     * *@param albumName representa el nombre del album a buscar.
+     * *@param artist representa de el artista.
+     * @return retorna el id del album buscado, en caso de fallar retorna -1. 
+     * 
+     */
     @Override
     public int findId(String albumName, String artist)
     {
@@ -185,6 +210,13 @@ public class AlbumDAOImpl implements AlbumDAO{
             }
     }
     
+     /**
+     * Metodo para eliminar el album de acuerdo al nombre y artista ingresado.
+     * *@param albumName representa el nombre del album a eliminar.
+     * *@param artist representa el nombre del artista relacionado al album.
+     * @return retorna un int, si es 1 se realizo con exito, en caso contrario retorna -1. 
+     * 
+     */
     @Override
     public int deleteAlbumByName(String albumName, String artist)
     {
@@ -216,6 +248,14 @@ public class AlbumDAOImpl implements AlbumDAO{
             } 
     }
     
+     /**
+     * Metodo para actualizar la informacion del album en la base de datos.
+     * *@param nombreAlbum representa el nombre del album a actualizar.
+     * *@param artista representa el nombre del artista relacionado al album.
+     * *@param idAlbum representa el id del album a modificar.
+     * @return retorna true si se realizo con exito y false en caso contrario. 
+     * 
+     */
     @Override
     public boolean updateInfoAlbum(String nombreAlbum, String artista, int idAlbum)
     {
@@ -252,7 +292,12 @@ public class AlbumDAOImpl implements AlbumDAO{
                 
             } 
     }
-    
+     /**
+     * Metodo para buscar un album de acuerdo a un id.
+     * *@param idAlbum representa el id del album a buscar.
+     * @return retorna un album en caso de encontrarlo, en caso contrario retorna nulo. 
+     * 
+     */
     @Override
     public Album findById(int idAlbum)
     {
@@ -289,7 +334,11 @@ public class AlbumDAOImpl implements AlbumDAO{
                 
             }
     }
-    
+         /**
+     * Metodo para obtener todas las consultas sql.
+     * @return retorna una lista con todas las consusltas sql. 
+     * 
+     */
     @Override
     public List<String> getCabeceras()
     {

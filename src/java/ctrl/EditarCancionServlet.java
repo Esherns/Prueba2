@@ -36,7 +36,11 @@ public class EditarCancionServlet extends HttpServlet {
         
         HttpSession session = request.getSession();
         List<CancionExtendida> listaCanciones = (List<CancionExtendida>)session.getAttribute("listaCanciones");
-        
+     /** 
+      * Aqui se busca la cancion seleccionada por el usuario para modificar,
+      * al encontrarla esta se guarda en el request para luego redirigir al jsp de
+      * edicion.
+     */
         for (CancionExtendida c : listaCanciones) 
         {
             if (c.getCancion().getId() == Integer.parseInt(request.getParameter("idCancion"))) 
